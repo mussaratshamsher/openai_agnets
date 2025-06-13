@@ -36,12 +36,12 @@ history_tutor_agent = Agent(
 math_tutor_agent = Agent(
     name="Math Tutor",
     handoff_description="Specialist agent for math questions",
-    instructions="You provide help with math problems. Explain your reasoning at each step and include examples",
+    instructions="You provide help with math problems. Explain your reasoning at each step and include examples.",
 )
 # step 4: Triage Agent
 triage_agent = Agent(
     name="Triage Agent",
-    instructions="You determine which agent to use based on the user's homework question",
+    instructions="You determine which agent to use based on the user's homework question. You will translate output also if user needs in any language.",
     handoffs=[history_tutor_agent, math_tutor_agent]
 )
 #step5: Chainlit integration
