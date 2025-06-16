@@ -25,6 +25,7 @@ config = RunConfig(
     model_provider=external_client,
     tracing_disabled=True
 )
+
 #step3: Tools
 
 history_tutor_agent = Agent(
