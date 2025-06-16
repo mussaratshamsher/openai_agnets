@@ -165,7 +165,7 @@ selected_language = st.sidebar.selectbox(
 )
 
 # Sidebar with an image
-st.sidebar.image('images/agent.jpg', use_container_width=True)
+st.sidebar.image('/images/agent.jpg', use_container_width=True)
 
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
