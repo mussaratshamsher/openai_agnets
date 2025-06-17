@@ -163,9 +163,7 @@ st.markdown(
         }
         
     </style>
-    """,
-    unsafe_allow_html=True
-)
+    """, unsafe_allow_html=True)
 
 # Sidebar for language selection
 selected_language = st.sidebar.selectbox(
