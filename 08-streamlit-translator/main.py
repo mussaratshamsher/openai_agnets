@@ -5,26 +5,23 @@ from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, Runner
 from dotenv import load_dotenv
 from agents.run import RunConfig
 from pathlib import Path
-# Load environment variables
+import base64
+
 load_dotenv()
 
-# Step 1: Initialize the Model and API Key
 MODEL_NAME = "gemini-2.0-flash"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Set up the external client for Gemini API
 external_client = AsyncOpenAI(
     api_key=GEMINI_API_KEY,
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
-# Initialize the model with OpenAI completions
 model = OpenAIChatCompletionsModel(
     model=MODEL_NAME,
     openai_client=external_client
 )
 
-# Step 2: Configure the agent runner
 config = RunConfig(
     model=model,
     model_provider=external_client,
@@ -170,17 +167,9 @@ selected_language = st.sidebar.selectbox(
     "Select Language for Translation",
     ["Urdu", "Hindi", "Arabic", "Japanese", "French", "English", "Spanish", "German", "Chinese"]
 )
-# Construct path to the image relative to this script file
-SCRIPT_DIR = Path(__file__).resolve().parent
-IMAGE_PATH = SCRIPT_DIR / "agent.jpg"
-
-# Sidebar with an image
-st.sidebar.image('./agent.jpg')
-if IMAGE_PATH.exists():
-    st.sidebar.image(str(IMAGE_PATH))
-else:
-    st.sidebar.warning(f"Image not found at {IMAGE_PATH}")
-
+# Load the sidebar image
+image_url = "./assest/agent.jpg"
+st.sidebar.image(image_url)
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
 
