@@ -168,10 +168,6 @@ selected_language = st.sidebar.selectbox(
     "Select Language for Translation",
     ["Urdu", "Hindi", "Arabic", "Japanese", "French", "English", "Spanish", "German", "Chinese"]
 )
-# Load the sidebar image
-image_url = "./assests/agent.jpg"
-st.sidebar.image(image_url)
-
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
 
