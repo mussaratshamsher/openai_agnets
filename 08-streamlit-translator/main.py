@@ -4,7 +4,7 @@ import asyncio
 from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, Runner
 from dotenv import load_dotenv
 from agents.run import RunConfig
-
+from pathlib import Path
 # Load environment variables
 load_dotenv()
 
@@ -170,8 +170,16 @@ selected_language = st.sidebar.selectbox(
     "Select Language for Translation",
     ["Urdu", "Hindi", "Arabic", "Japanese", "French", "English", "Spanish", "German", "Chinese"]
 )
+# Construct path to the image relative to this script file
+SCRIPT_DIR = Path(__file__).resolve().parent
+IMAGE_PATH = SCRIPT_DIR / "agent.jpg"
+
 # Sidebar with an image
 st.sidebar.image('./agent.jpg')
+if IMAGE_PATH.exists():
+    st.sidebar.image(str(IMAGE_PATH))
+else:
+    st.sidebar.warning(f"Image not found at {IMAGE_PATH}")
 
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
