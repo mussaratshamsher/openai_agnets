@@ -77,13 +77,18 @@ chinese_translator_agent = Agent(
     handoff_description="Specialist agent for translating messages to Chinese",
     instructions="You translate the user's message to Chinese. Provide accurate translations and maintain the original meaning."
 )
+italian_translator_agent = Agent(
+    name="Chinese Translator",
+    handoff_description="Specialist agent for translating messages to Italian",
+    instructions="You translate the user's message to Italian. Provide accurate translations and maintain the original meaning."
+)
 
 # Step 4: Triage Agent
 triage_agent = Agent(
     name="Triage Agent",
     instructions="You determine which agent to use based on the user's request for translation."
     "If multi-language translation is asked by the user then you will give tasks to each relevant agent.",
-    handoffs=[hindi_translator_agent, arabic_translator_agent, japanese_translator_agent, french_translator_agent, english_translator_agent, spanish_translator_agent, german_translator_agent, chinese_translator_agent, urdu_translator_agent]
+    handoffs=[hindi_translator_agent, arabic_translator_agent, japanese_translator_agent, french_translator_agent, english_translator_agent, spanish_translator_agent, german_translator_agent, chinese_translator_agent, urdu_translator_agent, italian_translator_agent]
 )
 
 # Step 5: Streamlit UI with title, Image and Stylish Button
@@ -99,7 +104,14 @@ st.markdown(
     background-image: linear-gradient(rgb(10, 11, 11),rgb(43, 42, 42),rgb(6, 131, 209));
     background-size: cover;
     background-position: center;
-    color: white;
+    color: white! important;
+    }
+     .stSidebar .stSelectbox div {
+     color: rgb(89, 183, 241)! important;
+    }
+    .stTextArea textarea {
+        color: white !important;
+        background-color: #333 !important;  
     }
     .stButton>button {
         background-image: linear-gradient(rgb(38, 186, 249),rgb(14, 13, 13),rgb(6, 131, 209));
@@ -130,10 +142,6 @@ st.markdown(
         transform: scale(1.05);
         color: white;
     }
-    .stButton>button span {
-        position: relative;
-        z-index: 1;
-    }
     @keyframes wave {
         0% {
             transform: translateX(0);
@@ -149,10 +157,11 @@ st.markdown(
    background-image: linear-gradient(rgb(10, 11, 11),rgb(43, 42, 42),rgb(6, 131, 209));
     color: white! important;
     }
-    .stWrite{
-    color: white;
-    }
-
+    .stText {
+            color: white! important;
+            font-size: 18px;
+        }
+        
     </style>
     """,
     unsafe_allow_html=True
@@ -163,9 +172,8 @@ selected_language = st.sidebar.selectbox(
     "Select Language for Translation",
     ["Urdu", "Hindi", "Arabic", "Japanese", "French", "English", "Spanish", "German", "Chinese"]
 )
-
 # Sidebar with an image
-st.sidebar.image('images/agent.jpg', use_container_width=True, unsafe_allow_html=True)
+st.sidebar.image('images/agent.jpg', use_container_width=True)
 
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
@@ -212,13 +220,10 @@ async def handle_translation(message, selected_language):
 if st.button('Translate'):
     if message:
         st.write(f"Translating message to {selected_language}...")
+        st.subheader(f"Translation to {selected_language}:")
 
         # Run the async function in the event loop
-        translated_text = asyncio.run(handle_translation(message, selected_language))
-
-        # After the translation is complete
-        st.subheader(f"Translation to {selected_language}:")
-        st.write(translated_text)
+        translated_text = asyncio.run(handle_translation(message, selected_language)) 
     else:
         st.error("Please enter a message to translate.")
 
