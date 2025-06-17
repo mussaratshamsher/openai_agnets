@@ -7,6 +7,7 @@ from agents.run import RunConfig
 from pathlib import Path
 import base64
 
+
 load_dotenv()
 
 MODEL_NAME = "gemini-2.0-flash"
@@ -168,8 +169,9 @@ selected_language = st.sidebar.selectbox(
     ["Urdu", "Hindi", "Arabic", "Japanese", "French", "English", "Spanish", "German", "Chinese"]
 )
 # Load the sidebar image
-image_url = "./assest/agent.jpg"
+image_url = "./assests/agent.jpg"
 st.sidebar.image(image_url)
+
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
 
