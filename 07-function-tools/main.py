@@ -1,4 +1,3 @@
-
 import os 
 import asyncio
 import chainlit as cl
@@ -16,6 +15,7 @@ external_client = AsyncOpenAI(
     api_key=GEMINI_API_KEY,
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )    
+
 model = OpenAIChatCompletionsModel(
     model=MODEL_NAME,
     openai_client=external_client
@@ -23,36 +23,38 @@ model = OpenAIChatCompletionsModel(
 
 @function_tool("get_weather")
 def get_weather(location: str, unit: str = "C") -> str:
-    return f"The weater in {location} is 22 degrees {unit}"
-
-async def main():
-   my_assistant = Agent(
-    name="Weather Assistant",
-    instructions="You respond to weather queries. You also respond to tell any location with in a specific area. Show temperature in celsius and fahrenheit."
-    "Show suggestion to show temperatue of next 24hours. Show map of the area.",
-    tools=[get_weather],
-    model=model
-   )     
+    """Dummy weather tool"""
+    return f"The weather in {location} is 22 degrees {unit}"
 
 @cl.on_chat_start
 async def on_chat_start():
-    cl.user_session.set("history", [])
-    await cl.Message(content="⛅☔Check weather by Location.🌍")
     
+    assistant = Agent(
+        name="Weather Assistant",
+        instructions="You respond to weather queries. You also respond to tell any location within a specific area. Show temperature in celsius and fahrenheit. Show suggestion to show temperature of next 24 hours. Show map of the area.",
+        tools=[get_weather],
+        model=model
+    )
+
+    cl.user_session.set("assistant", assistant)
+    cl.user_session.set("history", [])
+
+    await cl.Message(content="⛅☔ Check weather by Location. 🌍").send()
+
 @cl.on_message
-async def handle_message(message:cl.Message):
-    history = cl.user_session.get("history")
-    msg = cl.Message(content="")
-    await msg.send()
+async def on_message(message: cl.Message):
+    msg = await cl.Message(content="Thinking...").send()
 
-    history.append({"role":"user", "content":message.content})
-    result = Runner.run_streamed(my_assistant, history, run_concfig=config)
+    assistant = cl.user_session.get("assistant")
+    history = cl.user_session.get("history") or []
 
-    async for event in result.stream_events():
-        if event.type == "raw_response_event" and hasattr(event.data, 'delta'):
-            token = event.data.delta
-            await msg.stream_token(token)    
+    history.append({"role": "user", "content": message.content})
 
-    history.append({"role":"assistant", "content":result.final_output})
+    result = await Runner.run(
+        starting_agent=assistant,
+        input=history,)
+
+    history.append({"role": "assistant", "content": result.final_output})
     cl.user_session.set("history", history)
-
+    msg.content = result.final_output
+    await msg.update()
