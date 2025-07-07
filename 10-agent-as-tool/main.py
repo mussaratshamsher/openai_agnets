@@ -28,57 +28,21 @@ config = RunConfig(
     model_provider=external_client,
     tracing_disabled=True
 )
-
 # Step 3: Define the Translator Agents
 urdu_translator_agent = Agent(
     name="Urdu Translator",
-    handoff_description="Specialist agent for translating messages to Urdu",
+    # handoff_description="Specialist agent for translating messages to Urdu",
     instructions="You translate the user's message to Urdu. Provide accurate translations and maintain the original meaning."
-)
-hindi_translator_agent = Agent(
-    name="Hindi Translator",
-    handoff_description="Specialist agent for translating messages to Hindi",
-    instructions="You translate the user's message to Hindi. Provide accurate translations and maintain the original meaning."
 )
 arabic_translator_agent = Agent(
     name="Arabic Translator",
-    handoff_description="Specialist agent for translating messages to Arabic",
+    # handoff_description="Specialist agent for translating messages to Arabic",
     instructions="You translate the user's message to Arabic. Provide accurate translations and maintain the original meaning."
-)
-japanese_translator_agent = Agent(
-    name="Japanese Translator",
-    handoff_description="Specialist agent for translating messages to Japanese",
-    instructions="You translate the user's message to Japanese. Provide accurate translations and maintain the original meaning."
-)
-french_translator_agent = Agent(
-    name="French Translator",
-    handoff_description="Specialist agent for translating messages to French",
-    instructions="You translate the user's message to French. Provide accurate translations and maintain the original meaning."
 )
 english_translator_agent = Agent(
     name="English Translator",
-    handoff_description="Specialist agent for translating messages to English",
+    # handoff_description="Specialist agent for translating messages to English",
     instructions="You translate the user's message to English. Provide accurate translations and maintain the original meaning."
-)
-spanish_translator_agent = Agent(
-    name="Spanish Translator",
-    handoff_description="Specialist agent for translating messages to Spanish",
-    instructions="You translate the user's message to Spanish. Provide accurate translations and maintain the original meaning."
-)
-german_translator_agent = Agent(
-    name="German Translator",
-    handoff_description="Specialist agent for translating messages to German",
-    instructions="You translate the user's message to German. Provide accurate translations and maintain the original meaning."
-)
-chinese_translator_agent = Agent(
-    name="Chinese Translator",
-    handoff_description="Specialist agent for translating messages to Chinese",
-    instructions="You translate the user's message to Chinese. Provide accurate translations and maintain the original meaning."
-)
-italian_translator_agent = Agent(
-    name="Italian Translator",
-    handoff_description="Specialist agent for translating messages to Italian",
-    instructions="You translate the user's message to Italian. Provide accurate translations and maintain the original meaning."
 )
 
 # Step 4: Triage Agent
@@ -86,7 +50,21 @@ triage_agent = Agent(
     name="Triage Agent",
     instructions="You determine which agent to use based on the user's request for translation."
     "If multi-language translation is asked by the user then you will give tasks to each relevant agent.",
-    handoffs=[hindi_translator_agent, arabic_translator_agent, japanese_translator_agent, french_translator_agent, english_translator_agent, spanish_translator_agent, german_translator_agent, chinese_translator_agent, urdu_translator_agent, italian_translator_agent]
+    # handoffs=[arabic_translator_agent, english_translator_agent, urdu_translator_agent]
+     tools=[
+        urdu_translator_agent.as_tool(
+            tool_name="translate into Urdu",
+            tool_description="answer the user's question in Urdu."
+        ),
+        arabic_translator_agent.as_tool(
+            tool_name="translate into Arabic",
+            tool_description="answer the user's question in Arabic."
+        ),
+        english_translator_agent.as_tool(
+            tool_name="translate into English",
+            tool_description="answer the user's question in English."
+        ),
+     ]
 )
 
 # Step 5: Streamlit UI with title, Image and Stylish Button
@@ -99,20 +77,17 @@ st.markdown(
     .stApp {
     padding: 0px;
     margin: 0px;
-    background-image: linear-gradient(rgb(10, 11, 11),rgb(43, 42, 42),rgb(6, 131, 209));
+    background-image: linear-gradient(black,rgb(249, 164, 164),rgb(194, 184, 249));
     background-size: cover;
     background-position: center;
     color: white! important;
-    }
-     .stSidebar .stSelectbox div {
-     color: rgb(89, 183, 241)! important;
     }
     .stTextArea textarea {
         color: white !important;
         background-color: #333 !important;  
     }
     .stButton>button {
-        background-image: linear-gradient(rgb(38, 186, 249),rgb(14, 13, 13),rgb(6, 131, 209));
+        background-image: radial-gradient(black,rgb(249, 164, 164),rgb(43, 30, 114));
         color: white;
         font-size: 18px;
         padding: 12px 24px;
@@ -122,37 +97,12 @@ st.markdown(
         overflow: hidden;
         transition: background-color 0.4s ease, transform 0.3s ease;
     }
-    .stButton>button:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 300%;
-        height: 300%;
-        background: linear-gradient(rgb(38, 186, 249),rgb(14, 13, 13),rgb(6, 131, 209));
-        transform: rotate(45deg);
-        z-index: -1;
-        animation: wave 3s infinite;
-        z-index: 0;
-        border-radius: 50%;
-    }
-    .stButton>button:hover {
-        transform: scale(1.05);
-        color: white;
-    }
-    @keyframes wave {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-    }
+    
     .stSidebar{
     padding: 0px;
     margin-top: 58px;
     padding: 14px;
-   background-image: linear-gradient(rgb(10, 11, 11),rgb(43, 42, 42),rgb(6, 131, 209));
+   background-image: linear-gradient(rgb(97, 94, 95),rgb(249, 164, 164),rgb(194, 184, 249));
     color: white! important;
     }
     .stText {
@@ -166,7 +116,7 @@ st.markdown(
 # Sidebar for language selection
 selected_language = st.sidebar.selectbox(
     "Select Language for Translation",
-    ["Urdu", "Hindi", "Arabic", "Japanese", "French", "English", "Spanish", "German", "Chinese"]
+    ["Urdu", "Arabic","English"]
 )
 # Input area for user message
 message = st.text_area("Enter your message for translation:")
